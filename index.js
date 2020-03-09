@@ -10,6 +10,7 @@ let request = require('request');
 
 /*** Variables importantes */
 let screenShot =  "https://homepages.cae.wisc.edu/~ece533/images/airplane.png"
+// let screenShot =  "https://spn10.meraki.com/stream/jpeg/snapshot/e505bfc70dbfc606VHMTkxYzBhZWM2ZWMxNzFjZmExNTdiYTE0NzkzMDVkMWY0ZTIwNWE2OWE1NjQzMzlhNjcyOTkyZTMwNmUyOTQ1Ncz9yhRmCnmCwtgSHainelw9mprTI2MM96P9hYxmkgFggwcm-HkeTTjj-FsjOOLZLYUygKrhsbcPuwgAEGnBs0oKKsbF1QmoYRZClgQ2blf3EmfxrbXITJACYuKsyrwl6Gwd8PB6Y0-ABcFaXFOo_6fGmkBTPt8KoxOxVD-M_DGUvwtJWkVlTK2zEjupEQWxqsFo1ExMdwIyR2qGTUNPmts"
 let googleVisionAPI =  "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyC2tpQwMlure_l7zUAJECOWXsMQNB3Rs88"
 /*** Enviar imgaen a gvision */
 var options = {
@@ -25,24 +26,24 @@ var options = {
                     "imageUri":screenShot
                 }},
                 "features":[{
-                    "type":"LABEL_DETECTION",
+                    "type":"FACE_DETECTION",
                     "maxResults":10
                 }]
             }]
         })
   
   };
-let tags = []
+let tags = ""
 request(options, function (error, response) { 
     if (error) throw new Error(error);
     let jsResponse = JSON.parse(response.body)
     console.log(response.body)
-    for (const item of jsResponse["responses"]) {
-        for (const label of item.labelAnnotations) {
-            console.log(label.description)
-            tags.push( label.description )
-        }
-    }
+    // for (const item of jsResponse["responses"]) {
+    //     for (const label of item.labelAnnotations) {
+    //         console.log(label.description)
+    //         tags += label.description
+    //     }
+    // }
 });
 /*** Preparar mensaje de respuesta con los datos de gvision */
 /*** Enviar mensaje a webex desde el bot */
@@ -56,7 +57,7 @@ var options = {
     body: JSON.stringify({
         "roomId":"Y2lzY29zcGFyazovL3VzL1JPT00vZGUzOWU4ZjAtMzU3ZS0xMWVhLWI5YWYtYTU0YmU3NTY2N2Iy",
         "files":[screenShot],
-        "text":tags.toString()
+        "text": "Algo de descripción"
     })
 };
 request(options, function (error, response) { 
